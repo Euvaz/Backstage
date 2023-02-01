@@ -17,14 +17,14 @@ const (
 )
 
 func initTables(db *sql.DB) {
-    log.Printf("Initializing Tables")
+    log.Printf("Initializing Tables...")
     initTableNodes(db)
     initTableTokens(db)
     defer log.Printf("Tables successfully initialized")
 }
 
 func initTableNodes(db *sql.DB) {
-    log.Printf("Creating \"nodes\" table if not already present")
+    log.Printf("Creating \"nodes\" table if not already present...")
     var execStr string = `CREATE TABLE IF NOT EXISTS nodes (
                             id SERIAL PRIMARY KEY,
                             address INET,
@@ -37,7 +37,7 @@ func initTableNodes(db *sql.DB) {
 }
 
 func initTableTokens(db *sql.DB) {
-    log.Printf("Creating \"tokens\" table if not alrady present")
+    log.Printf("Creating \"tokens\" table if not alrady present...")
     var execStr string = `CREATE TABLE IF NOT EXISTS tokens (
                             id SERIAL PRIMARY KEY,
                             created TIMESTAMP
@@ -58,8 +58,12 @@ func enrollNode(db *sql.DB) {
 }
 
 func main() {
+    log.SetFlags(log.Lshortfile)
+    log.SetPrefix("Backstage: ")
+
     psqlconn := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable", host, port, user, password, dbname)
 
+    log.Printf("Connecting to database...")
     db, err := sql.Open("pgx", psqlconn)
     if err != nil {
         log.Fatalln(err)
@@ -72,7 +76,7 @@ func main() {
         log.Fatalln(err)
         os.Exit(1)
     }
-    log.Printf("Connected!")
+    log.Printf("Connection established")
 
     initTables(db)
 }
