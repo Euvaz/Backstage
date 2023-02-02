@@ -1,0 +1,7 @@
+host: "localhost"
+port: 3894
+dbHost: "localhost"
+dbPort: 5432
+dbUser: "user"
+dbPass: "pass"
+dbName: "db"
