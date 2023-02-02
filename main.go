@@ -55,13 +55,13 @@ func RandStringBytes(n int) string {
 }
 
 func genEnrollmentToken(db *sql.DB, host string, port int) {
-    var enrollmentToken string = RandStringBytes(50)
-    var enrollmentTokenJSON string = base64.StdEncoding.EncodeToString([]byte(fmt.Sprintf("{addr:\"%s:%v\",token:\"%s\"}", host, port, enrollmentToken)))
+    var key string = RandStringBytes(50)
+    var enrollmentToken string = base64.StdEncoding.EncodeToString([]byte(fmt.Sprintf("{addr:\"%s:%v\",key:\"%s\"}", host, port, key)))
     var execStr string = fmt.Sprintf(`INSERT INTO tokens (id, name, created)
                                       VALUES (DEFAULT, '%s', CURRENT_TIMESTAMP)`,
                                       enrollmentToken)
     db.Exec(execStr)
-    log.Printf("Token Generated")
+    log.Printf("Generated Token: %s", enrollmentToken)
 }
 
 func enrollNode(db *sql.DB) {
@@ -72,7 +72,7 @@ func enrollNode(db *sql.DB) {
                                       VALUES (DEFAULT, '%s', %v, '%s')`,
                                       nodeAddress, nodePort, nodeName)
     db.Exec(execStr)
-    log.Printf("Node \"%s\" enrolled", nodeName)
+    log.Printf("Node \"%s\" Enrolled", nodeName)
 }
 
 func main() {
