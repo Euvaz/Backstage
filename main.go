@@ -7,14 +7,10 @@ import (
     _ "github.com/jackc/pgx/v5/stdlib"
     "github.com/spf13/viper"
     "log"
-    "math/rand"
+    "crypto/rand"
     "os"
 )
  
-const (
-    alphanum = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
-)
-
 // Function to initialize database tables
 func initTables(db *sql.DB) {
     log.Printf("Initializing Tables...")
@@ -51,11 +47,12 @@ func initTableTokens(db *sql.DB) {
 
 // Function to generate a random alphanumeric string of set length
 func RandStringBytes(n int) string {
-    b := make([]byte, n)
-    for i := range b {
-        b[i] = alphanum[rand.Intn(len(alphanum))]
+    randomBytes := make([]byte, 64)
+    _, err := rand.Read(randomBytes)
+    if err != nil {
+        log.Println(err)
     }
-    return string(b)
+    return base64.StdEncoding.EncodeToString(randomBytes)[:n]
 }
 
 // Function to generate an enrollment token
@@ -66,6 +63,7 @@ func genEnrollmentToken(db *sql.DB, host string, port int) {
                                       VALUES (DEFAULT, '%s', CURRENT_TIMESTAMP)`, key)
     db.Exec(execStr)
     log.Printf("Generated Token: \"%s\"", enrollmentToken)
+    log.Printf("Generated Key: \"%s\"", key)
 }
 
 // Function to enroll a drone in the swarm
