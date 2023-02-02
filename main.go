@@ -3,12 +3,12 @@ package main
 import (
     "database/sql"
     "encoding/base64"
-    "log"
-    "os"
     "fmt"
     _ "github.com/jackc/pgx/v5/stdlib"
     "github.com/spf13/viper"
+    "log"
     "math/rand"
+    "os"
 )
  
 const (
