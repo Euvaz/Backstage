@@ -9,11 +9,11 @@ import (
 )
  
 const (
-    host     = "localhost"
-    port     = 5432
-    user     = "user"
-    password = "pass"
-    dbname   = "db"
+    dbHost     = "localhost"
+    dbPort     = 5432
+    dbUser     = "user"
+    dbPass     = "pass"
+    dbName     = "db"
 )
 
 func initTables(db *sql.DB) {
@@ -61,7 +61,7 @@ func main() {
     log.SetFlags(log.Lshortfile)
     log.SetPrefix("Backstage: ")
 
-    psqlconn := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable", host, port, user, password, dbname)
+    psqlconn := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable", dbHost, dbPort, dbUser, dbPass, dbName)
 
     log.Printf("Connecting to database...")
     db, err := sql.Open("pgx", psqlconn)
