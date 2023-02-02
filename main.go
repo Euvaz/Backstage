@@ -61,7 +61,7 @@ func genEnrollmentToken(db *sql.DB, host string, port int) {
                                       VALUES (DEFAULT, '%s', CURRENT_TIMESTAMP)`,
                                       enrollmentToken)
     db.Exec(execStr)
-    log.Printf("Generated Token: %s", enrollmentToken)
+    log.Printf("Generated Token: \"%s\"", enrollmentToken)
 }
 
 func enrollNode(db *sql.DB) {
