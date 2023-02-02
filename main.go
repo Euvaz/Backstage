@@ -93,8 +93,8 @@ func main() {
         log.Fatalln(err)
         os.Exit(1)
     }
-    defer db.Close()
     defer log.Printf("Database connection closed")
+    defer db.Close()
 
     err = db.Ping()
     if err != nil {
