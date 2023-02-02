@@ -18,15 +18,15 @@ const (
 // Function to initialize database tables
 func initTables(db *sql.DB) {
     log.Printf("Initializing Tables...")
-    initTableWorkers(db)
+    initTableDrones(db)
     initTableTokens(db)
     defer log.Printf("Tables successfully initialized")
 }
 
-// Function to initialize the "workers" table
-func initTableWorkers(db *sql.DB) {
-    log.Printf("Creating \"workers\" table if not already present...")
-    var execStr string = `CREATE TABLE IF NOT EXISTS workers (
+// Function to initialize the "drones" table
+func initTableDrones(db *sql.DB) {
+    log.Printf("Creating \"drones\" table if not already present...")
+    var execStr string = `CREATE TABLE IF NOT EXISTS drones (
                             id SERIAL PRIMARY KEY,
                             address INET,
                             port INTEGER,
@@ -68,16 +68,16 @@ func genEnrollmentToken(db *sql.DB, host string, port int) {
     log.Printf("Generated Token: \"%s\"", enrollmentToken)
 }
 
-// Function to enroll a worker in the cluster
-func enrollWorker(db *sql.DB) {
-    var workerAddress string = "10.13.0.25"
-    var workerPort int = 3802
-    var workerName string = "worker-1"
-    var execStr string = fmt.Sprintf(`INSERT INTO workers (id, address, port, name)
+// Function to enroll a drone in the swarm
+func enrollDrone(db *sql.DB) {
+    var droneAddress string = "10.13.0.25"
+    var dronePort int = 3802
+    var droneName string = "drone-1"
+    var execStr string = fmt.Sprintf(`INSERT INTO drones (id, address, port, name)
                                       VALUES (DEFAULT, '%s', %v, '%s')`,
-                                      workerAddress, workerPort, workerName)
+                                      droneAddress, dronePort, droneName)
     db.Exec(execStr)
-    log.Printf("worker \"%s\" Enrolled", workerName)
+    log.Printf("drone \"%s\" Enrolled", droneName)
 }
 
 func main() {
