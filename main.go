@@ -15,16 +15,18 @@ const (
     alphanum = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
 )
 
+// Function to initialize database tables
 func initTables(db *sql.DB) {
     log.Printf("Initializing Tables...")
-    initTableNodes(db)
+    initTableWorkers(db)
     initTableTokens(db)
     defer log.Printf("Tables successfully initialized")
 }
 
-func initTableNodes(db *sql.DB) {
-    log.Printf("Creating \"nodes\" table if not already present...")
-    var execStr string = `CREATE TABLE IF NOT EXISTS nodes (
+// Function to initialize the "workers" table
+func initTableWorkers(db *sql.DB) {
+    log.Printf("Creating \"workers\" table if not already present...")
+    var execStr string = `CREATE TABLE IF NOT EXISTS workers (
                             id SERIAL PRIMARY KEY,
                             address INET,
                             port INTEGER,
@@ -35,6 +37,7 @@ func initTableNodes(db *sql.DB) {
     log.Printf("Success")
 }
 
+// Function to initialize the "tokens" table
 func initTableTokens(db *sql.DB) {
     log.Printf("Creating \"tokens\" table if not alrady present...")
     var execStr string = `CREATE TABLE IF NOT EXISTS tokens (
@@ -46,6 +49,7 @@ func initTableTokens(db *sql.DB) {
     log.Printf("Success")
 }
 
+// Function to generate a random alphanumeric string of set length
 func RandStringBytes(n int) string {
     b := make([]byte, n)
     for i := range b {
@@ -54,6 +58,7 @@ func RandStringBytes(n int) string {
     return string(b)
 }
 
+// Function to generate an enrollment token
 func genEnrollmentToken(db *sql.DB, host string, port int) {
     var key string = RandStringBytes(50)
     var enrollmentToken string = base64.StdEncoding.EncodeToString([]byte(fmt.Sprintf("{addr:\"%s:%v\",key:\"%s\"}", host, port, key)))
@@ -63,15 +68,16 @@ func genEnrollmentToken(db *sql.DB, host string, port int) {
     log.Printf("Generated Token: \"%s\"", enrollmentToken)
 }
 
-func enrollNode(db *sql.DB) {
-    var nodeAddress string = "10.13.0.25"
-    var nodePort int = 3802
-    var nodeName string = "node-1"
-    var execStr string = fmt.Sprintf(`INSERT INTO nodes (id, address, port, name)
+// Function to enroll a worker in the cluster
+func enrollWorker(db *sql.DB) {
+    var workerAddress string = "10.13.0.25"
+    var workerPort int = 3802
+    var workerName string = "worker-1"
+    var execStr string = fmt.Sprintf(`INSERT INTO workers (id, address, port, name)
                                       VALUES (DEFAULT, '%s', %v, '%s')`,
-                                      nodeAddress, nodePort, nodeName)
+                                      workerAddress, workerPort, workerName)
     db.Exec(execStr)
-    log.Printf("Node \"%s\" Enrolled", nodeName)
+    log.Printf("worker \"%s\" Enrolled", workerName)
 }
 
 func main() {
