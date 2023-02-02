@@ -61,7 +61,8 @@ func main() {
     log.SetFlags(log.Lshortfile)
     log.SetPrefix("Backstage: ")
 
-    psqlconn := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable", dbHost, dbPort, dbUser, dbPass, dbName)
+    psqlconn := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable",
+                             dbHost, dbPort, dbUser, dbPass, dbName)
 
     log.Printf("Connecting to database...")
     db, err := sql.Open("pgx", psqlconn)
