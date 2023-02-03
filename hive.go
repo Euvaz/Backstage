@@ -5,7 +5,7 @@ import (
     "database/sql"
     "encoding/base64"
     "fmt"
-    "github.com/gin-gonic/gin"
+    _ "github.com/gin-gonic/gin"
     _ "github.com/jackc/pgx/v5/stdlib"
     "github.com/spf13/viper"
     "log"
