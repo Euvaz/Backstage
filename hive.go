@@ -14,20 +14,13 @@ import (
 )
  
 // Function to initialize database tables
-func initTables(db *sql.DB) {
+func initDB(db *sql.DB) {
     log.Printf("Initializing Tables...")
-    initTableDrones(db)
-    initTableGroups(db)
-    initTableSwarms(db)
-    initTableTokens(db)
-    initTableUsers(db)
     defer log.Printf("Tables successfully initialized")
-}
-
-// Function to initialize the "drones" table
-func initTableDrones(db *sql.DB) {
+    
+    // Create "drones" table
     log.Printf("Creating \"drones\" table if not already present...")
-    var execStr string = `CREATE TABLE IF NOT EXISTS drones (
+    var execStrDrones string = `CREATE TABLE IF NOT EXISTS drones (
                             id SERIAL PRIMARY KEY,
                             address INET,
                             port INTEGER,
@@ -35,60 +28,52 @@ func initTableDrones(db *sql.DB) {
                             UNIQUE (address, port),
                             UNIQUE (name)
                           )`
-    db.Exec(execStr)
+    db.Exec(execStrDrones)
     log.Printf("Success")
-}
 
-// Function to initialize the "groups" table
-func initTableGroups(db *sql.DB) {
+    // Create "groups" table
     log.Printf("Creating \"groups\" table if not already present...")
-    var execStr string = `CREATE TABLE IF NOT EXISTS groups (
+    var execStrGroups string = `CREATE TABLE IF NOT EXISTS groups (
                             id SERIAL PRIMARY KEY,
                             name TEXT,
                             permissions TEXT,
                             UNIQUE (name)
                           )`
-    db.Exec(execStr)
+    db.Exec(execStrGroups)
     log.Printf("Success")
-}
 
-// Function to initialize the "swarms" table
-func initTableSwarms(db *sql.DB) {
+    // Create "swarms" table
     log.Printf("Creating \"swarms\" table if not already present...")
-    var execStr string = `CREATE TABLE IF NOT EXISTS swarms (
+    var execStrSwarms string = `CREATE TABLE IF NOT EXISTS swarms (
                             id SERIAL PRIMARY KEY,
                             name TEXT
                             members TEXT
                             UNIQUE (name)
                           )`
-    db.Exec(execStr)
+    db.Exec(execStrSwarms)
     log.Printf("Success")
-}
 
-// Function to initialize the "tokens" table
-func initTableTokens(db *sql.DB) {
+    // Create "tokens" table
     log.Printf("Creating \"tokens\" table if not alrady present...")
-    var execStr string = `CREATE TABLE IF NOT EXISTS tokens (
+    var execStrTokens string = `CREATE TABLE IF NOT EXISTS tokens (
                             id SERIAL PRIMARY KEY,
                             key TEXT,
                             created TIMESTAMP,
                             UNIQUE (key)
                           )`
-    db.Exec(execStr)
+    db.Exec(execStrTokens)
     log.Printf("Success")
-}
 
-// Function to initialize the "users" table
-func initTableUsers(db *sql.DB) {
+    // Create "users" table
     log.Printf("Creating \"users\" table if not already present...")
-    var execStr string = `CREATE TABLE IF NOT EXISTS users (
+    var execStrUsers string = `CREATE TABLE IF NOT EXISTS users (
                             id SERIAL PRIMARY KEY,
                             name TEXT,
                             pass TEXT,
                             created TIMESTAMP,
                             UNIQUE (name)
                           )`
-    db.Exec(execStr)
+    db.Exec(execStrUsers)
     log.Printf("Success")
 }
 
@@ -153,7 +138,7 @@ func main() {
     }
     log.Printf("Connection established")
 
-    initTables(db)
+    initDB(db)
 
     //genEnrollmentToken(db, vi.GetString("host"), vi.GetInt("port"))
 }
