@@ -1,13 +1,15 @@
 package hive
  
 import (
+    "crypto/rand"
     "database/sql"
     "encoding/base64"
     "fmt"
+    "github.com/gin-gonic/gin"
     _ "github.com/jackc/pgx/v5/stdlib"
     "github.com/spf13/viper"
     "log"
-    "crypto/rand"
+    _ "net/http"
     "os"
 )
  
@@ -16,6 +18,7 @@ func initTables(db *sql.DB) {
     log.Printf("Initializing Tables...")
     initTableSwarm(db)
     initTableTokens(db)
+    initTableUsers(db)
     defer log.Printf("Tables successfully initialized")
 }
 
@@ -27,7 +30,8 @@ func initTableSwarm(db *sql.DB) {
                             address INET,
                             port INTEGER,
                             name TEXT,
-                            UNIQUE (address, port)
+                            UNIQUE (address, port),
+                            UNIQUE (name)
                           )`
     db.Exec(execStr)
     log.Printf("Success")
@@ -38,13 +42,27 @@ func initTableTokens(db *sql.DB) {
     log.Printf("Creating \"tokens\" table if not alrady present...")
     var execStr string = `CREATE TABLE IF NOT EXISTS tokens (
                             id SERIAL PRIMARY KEY,
-                            name TEXT,
-                            created TIMESTAMP
+                            key TEXT,
+                            created TIMESTAMP,
+                            UNIQUE (key)
                           )`
     db.Exec(execStr)
     log.Printf("Success")
 }
 
+// Function to initialize the "users" table
+func initTableUsers(db *sql.DB) {
+    log.Printf("Creating \"users\" table if not already present...")
+    var execStr string = `CREATE TABLE IF NOT EXISTS users (
+                            id SERIAL PRIMARY KEY,
+                            name TEXT,
+                            pass TEXT,
+                            created TIMESTAMP,
+                            UNIQUE (name)
+                          )`
+    db.Exec(execStr)
+    log.Printf("Success")
+}
 // Function to generate a random alphanumeric string of set length
 func RandStringBytes(n int) string {
     randomBytes := make([]byte, 64)
@@ -59,7 +77,7 @@ func RandStringBytes(n int) string {
 func genEnrollmentToken(db *sql.DB, host string, port int) {
     var key string = RandStringBytes(50)
     var enrollmentToken string = base64.StdEncoding.EncodeToString([]byte(fmt.Sprintf("{addr:\"%s:%v\",key:\"%s\"}", host, port, key)))
-    var execStr string = fmt.Sprintf(`INSERT INTO tokens (id, name, created)
+    var execStr string = fmt.Sprintf(`INSERT INTO tokens (id, key, created)
                                       VALUES (DEFAULT, '%s', CURRENT_TIMESTAMP)`, key)
     db.Exec(execStr)
     log.Printf("Generated Token: \"%s\"", enrollmentToken)
