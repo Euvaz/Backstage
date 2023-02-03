@@ -21,58 +21,58 @@ func initDB(db *sql.DB) {
     // Create "drones" table
     log.Printf("Creating \"drones\" table if not already present...")
     var execStrDrones string = `CREATE TABLE IF NOT EXISTS drones (
-                            id SERIAL PRIMARY KEY,
-                            address INET,
-                            port INTEGER,
-                            name TEXT,
-                            UNIQUE (address, port),
-                            UNIQUE (name)
-                          )`
+                                  id SERIAL PRIMARY KEY,
+                                  address INET,
+                                  port INTEGER,
+                                  name TEXT,
+                                  UNIQUE (address, port),
+                                  UNIQUE (name)
+                                )`
     db.Exec(execStrDrones)
     log.Printf("Success")
 
     // Create "groups" table
     log.Printf("Creating \"groups\" table if not already present...")
     var execStrGroups string = `CREATE TABLE IF NOT EXISTS groups (
-                            id SERIAL PRIMARY KEY,
-                            name TEXT,
-                            permissions TEXT,
-                            UNIQUE (name)
-                          )`
+                                  id SERIAL PRIMARY KEY,
+                                  name TEXT,
+                                  permissions TEXT,
+                                  UNIQUE (name)
+                                )`
     db.Exec(execStrGroups)
     log.Printf("Success")
 
     // Create "swarms" table
     log.Printf("Creating \"swarms\" table if not already present...")
     var execStrSwarms string = `CREATE TABLE IF NOT EXISTS swarms (
-                            id SERIAL PRIMARY KEY,
-                            name TEXT
-                            members TEXT
-                            UNIQUE (name)
-                          )`
+                                  id SERIAL PRIMARY KEY,
+                                  name TEXT
+                                  members TEXT
+                                  UNIQUE (name)
+                                )`
     db.Exec(execStrSwarms)
     log.Printf("Success")
 
     // Create "tokens" table
     log.Printf("Creating \"tokens\" table if not alrady present...")
     var execStrTokens string = `CREATE TABLE IF NOT EXISTS tokens (
-                            id SERIAL PRIMARY KEY,
-                            key TEXT,
-                            created TIMESTAMP,
-                            UNIQUE (key)
-                          )`
+                                  id SERIAL PRIMARY KEY,
+                                  key TEXT,
+                                  created TIMESTAMP,
+                                  UNIQUE (key)
+                                )`
     db.Exec(execStrTokens)
     log.Printf("Success")
 
     // Create "users" table
     log.Printf("Creating \"users\" table if not already present...")
     var execStrUsers string = `CREATE TABLE IF NOT EXISTS users (
-                            id SERIAL PRIMARY KEY,
-                            name TEXT,
-                            pass TEXT,
-                            created TIMESTAMP,
-                            UNIQUE (name)
-                          )`
+                                 id SERIAL PRIMARY KEY,
+                                 name TEXT,
+                                 pass TEXT,
+                                 created TIMESTAMP,
+                                 UNIQUE (name)
+                               )`
     db.Exec(execStrUsers)
     log.Printf("Success")
 }
