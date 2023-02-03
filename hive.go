@@ -16,21 +16,49 @@ import (
 // Function to initialize database tables
 func initTables(db *sql.DB) {
     log.Printf("Initializing Tables...")
-    initTableSwarm(db)
+    initTableDrones(db)
+    initTableGroups(db)
+    initTableSwarms(db)
     initTableTokens(db)
     initTableUsers(db)
     defer log.Printf("Tables successfully initialized")
 }
 
-// Function to initialize the "swarm" table
-func initTableSwarm(db *sql.DB) {
-    log.Printf("Creating \"swarm\" table if not already present...")
-    var execStr string = `CREATE TABLE IF NOT EXISTS swarm (
+// Function to initialize the "drones" table
+func initTableDrones(db *sql.DB) {
+    log.Printf("Creating \"drones\" table if not already present...")
+    var execStr string = `CREATE TABLE IF NOT EXISTS drones (
                             id SERIAL PRIMARY KEY,
                             address INET,
                             port INTEGER,
                             name TEXT,
                             UNIQUE (address, port),
+                            UNIQUE (name)
+                          )`
+    db.Exec(execStr)
+    log.Printf("Success")
+}
+
+// Function to initialize the "groups" table
+func initTableGroups(db *sql.DB) {
+    log.Printf("Creating \"groups\" table if not already present...")
+    var execStr string = `CREATE TABLE IF NOT EXISTS groups (
+                            id SERIAL PRIMARY KEY,
+                            name TEXT,
+                            permissions TEXT,
+                            UNIQUE (name)
+                          )`
+    db.Exec(execStr)
+    log.Printf("Success")
+}
+
+// Function to initialize the "swarms" table
+func initTableSwarms(db *sql.DB) {
+    log.Printf("Creating \"swarms\" table if not already present...")
+    var execStr string = `CREATE TABLE IF NOT EXISTS swarms (
+                            id SERIAL PRIMARY KEY,
+                            name TEXT
+                            members TEXT
                             UNIQUE (name)
                           )`
     db.Exec(execStr)
@@ -85,12 +113,12 @@ func genEnrollmentToken(db *sql.DB, host string, port int) {
     log.Printf("Generated Key: \"%s\"", key)
 }
 
-// Function to enroll a drone in the swarm
+// Function to enroll a Drone into the Hive inventory
 func enrollDrone(db *sql.DB) {
     var droneAddress string = "10.13.0.25"
     var dronePort int = 3802
     var droneName string = "drone-1"
-    var execStr string = fmt.Sprintf(`INSERT INTO swarm (id, address, port, name)
+    var execStr string = fmt.Sprintf(`INSERT INTO drones (id, address, port, name)
                                       VALUES (DEFAULT, '%s', %v, '%s')`,
                                       droneAddress, dronePort, droneName)
     db.Exec(execStr)
