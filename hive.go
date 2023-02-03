@@ -1,4 +1,4 @@
-package hive
+package main
  
 import (
     "database/sql"
@@ -8,7 +8,8 @@ import (
     "github.com/spf13/viper"
     "log"
     "crypto/rand"
-    "os"
+    _ "os"
+    "github.com/Euvaz/Backstage-Hive/db"
 )
  
 // Function to initialize database tables
@@ -86,27 +87,11 @@ func main() {
     vi.SetConfigFile("config.yaml")
     vi.ReadInConfig()
 
-    psqlconn := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable",
-                             vi.GetString("dbHost"), vi.GetInt("dbPort"), vi.GetString("dbUser"),
-                             vi.GetString("dbPass"), vi.GetString("dbName"))
+    db := pg.Connect(vi.GetString("dbHost"), vi.GetInt("dbPort"), vi.GetString("dbUser"),
+                     vi.GetString("dbPass"), vi.GetString("dbName"))
+    defer pg.Disconnect(db)
 
-    log.Printf("Connecting to database...")
-    db, err := sql.Open("pgx", psqlconn)
-    if err != nil {
-        log.Fatalln(err)
-        os.Exit(1)
-    }
-    defer log.Printf("Database connection closed")
-    defer db.Close()
-
-    err = db.Ping()
-    if err != nil {
-        log.Fatalln(err)
-        os.Exit(1)
-    }
-    log.Printf("Connection established")
-
-    initTables(db)
+    //initTables(db)
 
     //genEnrollmentToken(db, vi.GetString("host"), vi.GetInt("port"))
 }
