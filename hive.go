@@ -63,6 +63,7 @@ func initTableUsers(db *sql.DB) {
     db.Exec(execStr)
     log.Printf("Success")
 }
+
 // Function to generate a random alphanumeric string of set length
 func RandStringBytes(n int) string {
     randomBytes := make([]byte, 64)
