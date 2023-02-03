@@ -14,15 +14,15 @@ import (
 // Function to initialize database tables
 func initTables(db *sql.DB) {
     log.Printf("Initializing Tables...")
-    initTableDrones(db)
+    initTableSwarm(db)
     initTableTokens(db)
     defer log.Printf("Tables successfully initialized")
 }
 
-// Function to initialize the "drones" table
-func initTableDrones(db *sql.DB) {
-    log.Printf("Creating \"drones\" table if not already present...")
-    var execStr string = `CREATE TABLE IF NOT EXISTS drones (
+// Function to initialize the "swarm" table
+func initTableSwarm(db *sql.DB) {
+    log.Printf("Creating \"swarm\" table if not already present...")
+    var execStr string = `CREATE TABLE IF NOT EXISTS swarm (
                             id SERIAL PRIMARY KEY,
                             address INET,
                             port INTEGER,
@@ -71,7 +71,7 @@ func enrollDrone(db *sql.DB) {
     var droneAddress string = "10.13.0.25"
     var dronePort int = 3802
     var droneName string = "drone-1"
-    var execStr string = fmt.Sprintf(`INSERT INTO drones (id, address, port, name)
+    var execStr string = fmt.Sprintf(`INSERT INTO swarm (id, address, port, name)
                                       VALUES (DEFAULT, '%s', %v, '%s')`,
                                       droneAddress, dronePort, droneName)
     db.Exec(execStr)
