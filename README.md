@@ -1,8 +1,15 @@
-# Backstage
+# Backstage Hive
+
+[Drone Repository](https://github.com/euvaz/backstage-drone)
 
 ## Overview
 
+- [Introduction](#introduction)
 - [Terminology](#terminology)
+
+## Introduction
+
+This repository will be utilized for code used uniquely by the Hive(s), as well as common code used by the Hive(s) and Drone(s).
 
 ## Terminology
 
