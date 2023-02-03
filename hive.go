@@ -1,4 +1,4 @@
-package main
+package hive
  
 import (
     "database/sql"
