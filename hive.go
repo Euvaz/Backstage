@@ -53,7 +53,7 @@ func initDB(db *sql.DB) {
     var execStrGroups string = `CREATE TABLE IF NOT EXISTS groups (
                                   id SERIAL PRIMARY KEY,
                                   name TEXT,
-                                  permissions TEXT
+                                  permissions SERIAL
                                     REFERENCES permissions (id),
                                   UNIQUE (name)
                                 )`
@@ -67,8 +67,8 @@ func initDB(db *sql.DB) {
     log.Printf("Creating \"swarms\" table if not already present...")
     var execStrSwarms string = `CREATE TABLE IF NOT EXISTS swarms (
                                   id SERIAL PRIMARY KEY,
-                                  name TEXT
-                                  members TEXT
+                                  name TEXT,
+                                  members SERIAL
                                     REFERENCES drones (id),
                                   UNIQUE (name)
                                 )`
@@ -97,8 +97,8 @@ func initDB(db *sql.DB) {
     var execStrUsers string = `CREATE TABLE IF NOT EXISTS users (
                                  id SERIAL PRIMARY KEY,
                                  name TEXT,
-                                 group TEXT
-                                   REFERENCES groups (name),
+                                 group SERIAL
+                                   REFERENCES groups (id),
                                  pass TEXT,
                                  created TIMESTAMP,
                                  UNIQUE (name)
