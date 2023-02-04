@@ -139,7 +139,7 @@ func enrollDrone(db *sql.DB) {
 
 func main() {
     log.SetFlags(log.Lshortfile)
-    log.SetPrefix("Backstage: ")
+    log.SetPrefix("Backstage-Hive: ")
 
     vi := viper.New()
     vi.SetConfigFile("config.yaml")
