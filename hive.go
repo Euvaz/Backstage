@@ -37,9 +37,19 @@ func initDB(db *sql.DB) {
                                   id SERIAL PRIMARY KEY,
                                   name TEXT,
                                   permissions TEXT,
+                                    REFERENCES permissions (id)
                                   UNIQUE (name)
                                 )`
     db.Exec(execStrGroups)
+    log.Printf("Success")
+
+    // Create "permissions" table
+    log.Printf("Creating \"permissions\" table if not already present...")
+    var execStrPermissions string = `CREATE TABLE IF NOT EXISTS permissions (
+                                       id SERIAL PRIMARY KEY,
+                                       name TEXT
+                                     )`
+    db.Exec(execStrPermissions)
     log.Printf("Success")
 
     // Create "swarms" table
@@ -48,6 +58,7 @@ func initDB(db *sql.DB) {
                                   id SERIAL PRIMARY KEY,
                                   name TEXT
                                   members TEXT
+                                    REFERENCES drones (id)
                                   UNIQUE (name)
                                 )`
     db.Exec(execStrSwarms)
@@ -69,6 +80,8 @@ func initDB(db *sql.DB) {
     var execStrUsers string = `CREATE TABLE IF NOT EXISTS users (
                                  id SERIAL PRIMARY KEY,
                                  name TEXT,
+                                 group TEXT
+                                   REFERENCES groups (name)
                                  pass TEXT,
                                  created TIMESTAMP,
                                  UNIQUE (name)
