@@ -15,6 +15,8 @@ import (
  
 // Function to initialize database tables
 func initDB(db *sql.DB) {
+    var err error
+
     log.Printf("Initializing Tables...")
     defer log.Printf("Tables successfully initialized")
     
@@ -28,7 +30,10 @@ func initDB(db *sql.DB) {
                                   UNIQUE (address, port),
                                   UNIQUE (name)
                                 )`
-    db.Exec(execStrDrones)
+    _, err = db.Exec(execStrDrones)
+    if err != nil {
+        log.Fatalln(err)
+    }
     log.Printf("Success")
 
     // Create "groups" table
@@ -40,7 +45,10 @@ func initDB(db *sql.DB) {
                                     REFERENCES permissions (id)
                                   UNIQUE (name)
                                 )`
-    db.Exec(execStrGroups)
+    _, err = db.Exec(execStrGroups)
+    if err != nil {
+        log.Fatalln(err)
+    }
     log.Printf("Success")
 
     // Create "permissions" table
@@ -49,7 +57,10 @@ func initDB(db *sql.DB) {
                                        id SERIAL PRIMARY KEY,
                                        name TEXT
                                      )`
-    db.Exec(execStrPermissions)
+    _, err = db.Exec(execStrPermissions)
+    if err != nil {
+        log.Fatalln(err)
+    }
     log.Printf("Success")
 
     // Create "swarms" table
@@ -61,7 +72,10 @@ func initDB(db *sql.DB) {
                                     REFERENCES drones (id)
                                   UNIQUE (name)
                                 )`
-    db.Exec(execStrSwarms)
+    _, err = db.Exec(execStrSwarms)
+    if err != nil {
+        log.Fatalln(err)
+    }
     log.Printf("Success")
 
     // Create "tokens" table
@@ -72,7 +86,10 @@ func initDB(db *sql.DB) {
                                   created TIMESTAMP,
                                   UNIQUE (key)
                                 )`
-    db.Exec(execStrTokens)
+    _, err = db.Exec(execStrTokens)
+    if err != nil {
+        log.Fatalln(err)
+    }
     log.Printf("Success")
 
     // Create "users" table
@@ -86,7 +103,10 @@ func initDB(db *sql.DB) {
                                  created TIMESTAMP,
                                  UNIQUE (name)
                                )`
-    db.Exec(execStrUsers)
+    _, err = db.Exec(execStrUsers)
+    if err != nil {
+        log.Fatalln(err)
+    }
     log.Printf("Success")
 }
 
