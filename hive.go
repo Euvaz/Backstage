@@ -117,7 +117,7 @@ func RandStringBytes(n int) string {
 // Function to generate an enrollment token
 func genEnrollmentToken(db *sql.DB, host string, port int) {
     var key string = RandStringBytes(50)
-    var enrollmentToken string = base64.StdEncoding.EncodeToString([]byte(fmt.Sprintf("{addr:\"%s:%v\",key:\"%s\"}", host, port, key)))
+    var enrollmentToken string = base64.StdEncoding.EncodeToString([]byte(fmt.Sprintf(`{"addr":"%s:%v","key":"%s"}`, host, port, key)))
     var execStr string = fmt.Sprintf(`INSERT INTO tokens (id, key, created)
                                       VALUES (DEFAULT, '%s', CURRENT_TIMESTAMP)`, key)
     db.Exec(execStr)
@@ -175,5 +175,5 @@ func main() {
 
     initDB(db)
 
-    //genEnrollmentToken(db, vi.GetString("host"), vi.GetInt("port"))
+    genEnrollmentToken(db, vi.GetString("host"), vi.GetInt("port"))
 }
