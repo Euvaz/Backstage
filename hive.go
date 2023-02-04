@@ -151,6 +151,14 @@ func main() {
     vi.SetConfigFile("config.yaml")
     vi.ReadInConfig()
 
+    vi.SetDefault("host", "localhost")
+    vi.SetDefault("port", 6789)
+    vi.SetDefault("dbHost", "localhost")
+    vi.SetDefault("dbPort", 5432)
+    vi.SetDefault("dbUser", "backstage")
+    vi.SetDefault("dbPass", "backstage")
+    vi.SetDefault("dbName", "backstage")
+
     psqlconn := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable",
                              vi.GetString("dbHost"), vi.GetInt("dbPort"), vi.GetString("dbUser"),
                              vi.GetString("dbPass"), vi.GetString("dbName"))
