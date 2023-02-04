@@ -36,21 +36,6 @@ func initDB(db *sql.DB) {
     }
     log.Printf("Success")
 
-    // Create "groups" table
-    log.Printf("Creating \"groups\" table if not already present...")
-    var execStrGroups string = `CREATE TABLE IF NOT EXISTS groups (
-                                  id SERIAL PRIMARY KEY,
-                                  name TEXT,
-                                  permissions TEXT,
-                                    REFERENCES permissions (id)
-                                  UNIQUE (name)
-                                )`
-    _, err = db.Exec(execStrGroups)
-    if err != nil {
-        log.Fatalln(err)
-    }
-    log.Printf("Success")
-
     // Create "permissions" table
     log.Printf("Creating \"permissions\" table if not already present...")
     var execStrPermissions string = `CREATE TABLE IF NOT EXISTS permissions (
@@ -63,13 +48,28 @@ func initDB(db *sql.DB) {
     }
     log.Printf("Success")
 
+    // Create "groups" table
+    log.Printf("Creating \"groups\" table if not already present...")
+    var execStrGroups string = `CREATE TABLE IF NOT EXISTS groups (
+                                  id SERIAL PRIMARY KEY,
+                                  name TEXT,
+                                  permissions TEXT
+                                    REFERENCES permissions (id),
+                                  UNIQUE (name)
+                                )`
+    _, err = db.Exec(execStrGroups)
+    if err != nil {
+        log.Fatalln(err)
+    }
+    log.Printf("Success")
+
     // Create "swarms" table
     log.Printf("Creating \"swarms\" table if not already present...")
     var execStrSwarms string = `CREATE TABLE IF NOT EXISTS swarms (
                                   id SERIAL PRIMARY KEY,
                                   name TEXT
                                   members TEXT
-                                    REFERENCES drones (id)
+                                    REFERENCES drones (id),
                                   UNIQUE (name)
                                 )`
     _, err = db.Exec(execStrSwarms)
@@ -98,7 +98,7 @@ func initDB(db *sql.DB) {
                                  id SERIAL PRIMARY KEY,
                                  name TEXT,
                                  group TEXT
-                                   REFERENCES groups (name)
+                                   REFERENCES groups (name),
                                  pass TEXT,
                                  created TIMESTAMP,
                                  UNIQUE (name)
