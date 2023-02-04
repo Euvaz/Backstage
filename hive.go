@@ -22,15 +22,14 @@ func initDB(db *sql.DB) {
     
     // Create "drones" table
     log.Printf("Creating \"drones\" table if not already present...")
-    var execStrDrones string = `CREATE TABLE IF NOT EXISTS drones (
-                                  id SERIAL PRIMARY KEY,
-                                  address INET,
-                                  port INTEGER,
-                                  name TEXT,
-                                  UNIQUE (address, port),
-                                  UNIQUE (name)
-                                )`
-    _, err = db.Exec(execStrDrones)
+    _, err = db.Exec(`CREATE TABLE IF NOT EXISTS drones (
+                        id SERIAL PRIMARY KEY,
+                        address INET,
+                        port INTEGER,
+                        name TEXT,
+                        UNIQUE (address, port),
+                        UNIQUE (name)
+                      )`)
     if err != nil {
         log.Fatalln(err)
     }
@@ -38,11 +37,10 @@ func initDB(db *sql.DB) {
 
     // Create "permissions" table
     log.Printf("Creating \"permissions\" table if not already present...")
-    var execStrPermissions string = `CREATE TABLE IF NOT EXISTS permissions (
-                                       id SERIAL PRIMARY KEY,
-                                       name TEXT
-                                     )`
-    _, err = db.Exec(execStrPermissions)
+    _, err = db.Exec(`CREATE TABLE IF NOT EXISTS permissions (
+                        id SERIAL PRIMARY KEY,
+                        name TEXT
+                      )`)
     if err != nil {
         log.Fatalln(err)
     }
@@ -50,14 +48,13 @@ func initDB(db *sql.DB) {
 
     // Create "groups" table
     log.Printf("Creating \"groups\" table if not already present...")
-    var execStrGroups string = `CREATE TABLE IF NOT EXISTS groups (
-                                  id SERIAL PRIMARY KEY,
-                                  name TEXT,
-                                  permissions_id SERIAL
-                                    REFERENCES permissions (id),
-                                  UNIQUE (name)
-                                )`
-    _, err = db.Exec(execStrGroups)
+    _, err = db.Exec(`CREATE TABLE IF NOT EXISTS groups (
+                        id SERIAL PRIMARY KEY,
+                        name TEXT,
+                        permissions_id SERIAL
+                        REFERENCES permissions (id),
+                        UNIQUE (name)
+                      )`)
     if err != nil {
         log.Fatalln(err)
     }
@@ -65,14 +62,13 @@ func initDB(db *sql.DB) {
 
     // Create "swarms" table
     log.Printf("Creating \"swarms\" table if not already present...")
-    var execStrSwarms string = `CREATE TABLE IF NOT EXISTS swarms (
-                                  id SERIAL PRIMARY KEY,
-                                  name TEXT,
-                                  drones_id SERIAL
-                                    REFERENCES drones (id),
-                                  UNIQUE (name)
-                                )`
-    _, err = db.Exec(execStrSwarms)
+    _, err = db.Exec(`CREATE TABLE IF NOT EXISTS swarms (
+                        id SERIAL PRIMARY KEY,
+                        name TEXT,
+                        drones_id SERIAL
+                        REFERENCES drones (id),
+                        UNIQUE (name)
+                      )`)
     if err != nil {
         log.Fatalln(err)
     }
@@ -80,13 +76,12 @@ func initDB(db *sql.DB) {
 
     // Create "tokens" table
     log.Printf("Creating \"tokens\" table if not alrady present...")
-    var execStrTokens string = `CREATE TABLE IF NOT EXISTS tokens (
-                                  id SERIAL PRIMARY KEY,
-                                  key TEXT,
-                                  created TIMESTAMP,
-                                  UNIQUE (key)
-                                )`
-    _, err = db.Exec(execStrTokens)
+    _, err = db.Exec(`CREATE TABLE IF NOT EXISTS tokens (
+                        id SERIAL PRIMARY KEY,
+                        key TEXT,
+                        created TIMESTAMP,
+                        UNIQUE (key)
+                      )`)
     if err != nil {
         log.Fatalln(err)
     }
@@ -94,16 +89,15 @@ func initDB(db *sql.DB) {
 
     // Create "users" table
     log.Printf("Creating \"users\" table if not already present...")
-    var execStrUsers string = `CREATE TABLE IF NOT EXISTS users (
-                                 id SERIAL PRIMARY KEY,
-                                 name TEXT,
-                                 groups_id SERIAL
-                                   REFERENCES groups (id),
-                                 pass TEXT,
-                                 created TIMESTAMP,
-                                 UNIQUE (name)
-                               )`
-    _, err = db.Exec(execStrUsers)
+    _, err = db.Exec(`CREATE TABLE IF NOT EXISTS users (
+                        id SERIAL PRIMARY KEY,
+                        name TEXT,
+                        groups_id SERIAL
+                        REFERENCES groups (id),
+                        pass TEXT,
+                        created TIMESTAMP,
+                        UNIQUE (name)
+                      )`)
     if err != nil {
         log.Fatalln(err)
     }
