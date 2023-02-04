@@ -157,6 +157,7 @@ func main() {
                              vi.GetString("dbHost"), vi.GetInt("dbPort"), vi.GetString("dbUser"),
                              vi.GetString("dbPass"), vi.GetString("dbName"))
 
+    // Connect to database
     log.Printf("Connecting to database...")
     db, err := sql.Open("pgx", psqlconn)
     if err != nil {
@@ -166,6 +167,7 @@ func main() {
     defer log.Printf("Database connection closed")
     defer db.Close()
 
+    // Verify database connection
     err = db.Ping()
     if err != nil {
         log.Fatalln(err)
@@ -173,7 +175,8 @@ func main() {
     }
     log.Printf("Connection established")
 
+    // Initialize database
     initDB(db)
 
-    genEnrollmentToken(db, vi.GetString("host"), vi.GetInt("port"))
+    //genEnrollmentToken(db, vi.GetString("host"), vi.GetInt("port"))
 }
