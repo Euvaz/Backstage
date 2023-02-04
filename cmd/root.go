@@ -4,9 +4,11 @@ import (
     "crypto/rand"
     "database/sql"
     "encoding/base64"
+    "fmt"
     _ "github.com/gin-gonic/gin"
     _ "github.com/jackc/pgx/v5/stdlib"
 	"github.com/spf13/cobra"
+    "github.com/spf13/viper"
     "log"
 	"os"
 )
@@ -112,15 +114,61 @@ func RandStringBytes(n int) string {
     return base64.StdEncoding.EncodeToString(randomBytes)[:n]
 }
 
+func initViper() *viper.Viper {
+    viper := viper.New()
+    viper.SetConfigFile("config.yaml")
+    err := viper.ReadInConfig()
+    if err != nil {
+        log.Fatalln(err)
+        os.Exit(1)
+    }
+
+    viper.SetDefault("host", "localhost")
+    viper.SetDefault("port", 6789)
+    viper.SetDefault("dbHost", "localhost")
+    viper.SetDefault("dbPort", 5432)
+    viper.SetDefault("dbUser", "backstage")
+    viper.SetDefault("dbPass", "backstage")
+    viper.SetDefault("dbName", "backstage")
+
+    return viper
+}
+
 var (
+    vi = initViper()
     HiveCmd = &cobra.Command{
 	    Use:   "Backstage-Hive",
 	    Short: "Short Desc",
 	    Long: `Long
                Desc`,
         PersistentPreRun: func(cmd *cobra.Command, args []string) {
+            log.Printf(vi.GetString("dbHost"))
         },
         Run: func(cmd *cobra.Command, args []string) {
+            psqlconn := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable",
+                                     vi.GetString("dbHost"), vi.GetInt("dbPort"), vi.GetString("dbUser"),
+                                     vi.GetString("dbPass"), vi.GetString("dbName"))
+
+            // Connect to database
+            log.Printf("Connecting to database...")
+            db, err := sql.Open("pgx", psqlconn)
+            if err != nil {
+                log.Fatalln(err)
+                os.Exit(1)
+            }
+            defer log.Printf("Database connection closed")
+            defer db.Close()
+
+            // Verify database connection
+            err = db.Ping()
+            if err != nil {
+                log.Fatalln(err)
+                os.Exit(1)
+            }
+            log.Printf("Connection established")
+
+            // Initialize database
+            initDB(db)
         },
     }
 )

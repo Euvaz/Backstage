@@ -6,10 +6,8 @@ import (
     "github.com/Euvaz/Backstage-Hive/cmd"
     _ "github.com/gin-gonic/gin"
     _ "github.com/jackc/pgx/v5/stdlib"
-    "github.com/spf13/viper"
     "log"
     _ "net/http"
-    "os"
 )
  
 // Function to generate an enrollment token
@@ -38,47 +36,6 @@ func enrollDrone(db *sql.DB) {
 func main() {
     log.SetFlags(log.Lshortfile)
     log.SetPrefix("Backstage-Hive: ")
-
-    vi := viper.New()
-    vi.SetConfigFile("config.yaml")
-    err := vi.ReadInConfig()
-    if err != nil {
-        log.Fatalln(err)
-        os.Exit(1)
-    }
-
-    vi.SetDefault("host", "localhost")
-    vi.SetDefault("port", 6789)
-    vi.SetDefault("dbHost", "localhost")
-    vi.SetDefault("dbPort", 5432)
-    vi.SetDefault("dbUser", "backstage")
-    vi.SetDefault("dbPass", "backstage")
-    vi.SetDefault("dbName", "backstage")
-
-//    psqlconn := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable",
-//                             vi.GetString("dbHost"), vi.GetInt("dbPort"), vi.GetString("dbUser"),
-//                             vi.GetString("dbPass"), vi.GetString("dbName"))
-//
-//    // Connect to database
-//    log.Printf("Connecting to database...")
-//    db, err := sql.Open("pgx", psqlconn)
-//    if err != nil {
-//        log.Fatalln(err)
-//        os.Exit(1)
-//    }
-//    defer log.Printf("Database connection closed")
-//    defer db.Close()
-//
-//    // Verify database connection
-//    err = db.Ping()
-//    if err != nil {
-//        log.Fatalln(err)
-//        os.Exit(1)
-//    }
-//    log.Printf("Connection established")
-//
-//    // Initialize database
-//    initDB(db)
 
     HiveCmd.Execute()
 
