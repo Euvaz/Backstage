@@ -154,38 +154,30 @@ func main() {
     vi.SetDefault("dbPass", "backstage")
     vi.SetDefault("dbName", "backstage")
 
-    switch len(os.Args) {
-    case 1:
-        psqlconn := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable",
-                                 vi.GetString("dbHost"), vi.GetInt("dbPort"), vi.GetString("dbUser"),
-                                 vi.GetString("dbPass"), vi.GetString("dbName"))
+    psqlconn := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable",
+                             vi.GetString("dbHost"), vi.GetInt("dbPort"), vi.GetString("dbUser"),
+                             vi.GetString("dbPass"), vi.GetString("dbName"))
 
-        // Connect to database
-        log.Printf("Connecting to database...")
-        db, err := sql.Open("pgx", psqlconn)
-        if err != nil {
-            log.Fatalln(err)
-            os.Exit(1)
-        }
-        defer log.Printf("Database connection closed")
-        defer db.Close()
-
-        // Verify database connection
-        err = db.Ping()
-        if err != nil {
-            log.Fatalln(err)
-            os.Exit(1)
-        }
-        log.Printf("Connection established")
-
-        // Initialize database
-        initDB(db)
-
-    case 2:
-        fmt.Println("More shit")
+    // Connect to database
+    log.Printf("Connecting to database...")
+    db, err := sql.Open("pgx", psqlconn)
+    if err != nil {
+        log.Fatalln(err)
+        os.Exit(1)
     }
+    defer log.Printf("Database connection closed")
+    defer db.Close()
 
+    // Verify database connection
+    err = db.Ping()
+    if err != nil {
+        log.Fatalln(err)
+        os.Exit(1)
+    }
+    log.Printf("Connection established")
 
+    // Initialize database
+    initDB(db)
 
     //genEnrollmentToken(db, vi.GetString("host"), vi.GetInt("port"))
 }
