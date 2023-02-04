@@ -13,7 +13,7 @@ import (
     "os"
 )
  
-// Function to initialize database tables
+// Function to initialize database
 func initDB(db *sql.DB) {
     var err error
 
