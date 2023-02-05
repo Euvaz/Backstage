@@ -13,6 +13,27 @@ import (
 	"os"
 )
 
+// Function to initialize Viper
+func initViper() *viper.Viper {
+    viper := viper.New()
+    viper.SetConfigFile("config.yaml")
+    err := viper.ReadInConfig()
+    if err != nil {
+        log.Fatalln(err)
+        os.Exit(1)
+    }
+
+    viper.SetDefault("host", "localhost")
+    viper.SetDefault("port", 6789)
+    viper.SetDefault("dbHost", "localhost")
+    viper.SetDefault("dbPort", 5432)
+    viper.SetDefault("dbUser", "backstage")
+    viper.SetDefault("dbPass", "backstage")
+    viper.SetDefault("dbName", "backstage")
+
+    return viper
+}
+
 // Function to initialize database
 func initDB(db *sql.DB) {
     var err error
@@ -114,61 +135,51 @@ func RandStringBytes(n int) string {
     return base64.StdEncoding.EncodeToString(randomBytes)[:n]
 }
 
-func initViper() *viper.Viper {
-    viper := viper.New()
-    viper.SetConfigFile("config.yaml")
-    err := viper.ReadInConfig()
+func dbConnect(host string, port int, user string, pass string, name string) *sql.DB {
+
+    psqlconn := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable",
+                             host, port, user, pass, name)
+
+    // Connect to database
+    log.Printf("Connecting to database...")
+    database, err := sql.Open("pgx", psqlconn)
     if err != nil {
         log.Fatalln(err)
         os.Exit(1)
     }
+    //defer log.Printf("Database connection closed")
+    //defer database.Close()
 
-    viper.SetDefault("host", "localhost")
-    viper.SetDefault("port", 6789)
-    viper.SetDefault("dbHost", "localhost")
-    viper.SetDefault("dbPort", 5432)
-    viper.SetDefault("dbUser", "backstage")
-    viper.SetDefault("dbPass", "backstage")
-    viper.SetDefault("dbName", "backstage")
+    // Verify database connection
+    err = database.Ping()
+    if err != nil {
+        log.Fatalln(err)
+        os.Exit(1)
+    }
+    log.Printf("Connection established")
 
-    return viper
+    // Initialize database
+    //initDB(db)
+    return database
 }
 
 var (
     vi = initViper()
+    db = dbConnect(vi.GetString("dbHost"), vi.GetInt("dbPort"), vi.GetString("dbUser"),
+                   vi.GetString("dbPass"), vi.GetString("dbName"))
     HiveCmd = &cobra.Command{
 	    Use:   "Backstage-Hive",
 	    Short: "Short Desc",
 	    Long: `Long
                Desc`,
-        PersistentPreRun: func(cmd *cobra.Command, args []string) {
-            log.Printf(vi.GetString("dbHost"))
-        },
-        Run: func(cmd *cobra.Command, args []string) {
-            psqlconn := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable",
-                                     vi.GetString("dbHost"), vi.GetInt("dbPort"), vi.GetString("dbUser"),
-                                     vi.GetString("dbPass"), vi.GetString("dbName"))
 
-            // Connect to database
-            log.Printf("Connecting to database...")
-            db, err := sql.Open("pgx", psqlconn)
-            if err != nil {
-                log.Fatalln(err)
-                os.Exit(1)
-            }
+        PersistentPreRun: func(cmd *cobra.Command, args []string) {
+            initDB(db)
             defer log.Printf("Database connection closed")
             defer db.Close()
+        },
 
-            // Verify database connection
-            err = db.Ping()
-            if err != nil {
-                log.Fatalln(err)
-                os.Exit(1)
-            }
-            log.Printf("Connection established")
-
-            // Initialize database
-            initDB(db)
+        Run: func(cmd *cobra.Command, args []string) {
         },
     }
 )

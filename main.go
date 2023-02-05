@@ -1,13 +1,8 @@
 package main
  
 import (
-    "database/sql"
-    "fmt"
     "github.com/Euvaz/Backstage-Hive/cmd"
-    _ "github.com/gin-gonic/gin"
-    _ "github.com/jackc/pgx/v5/stdlib"
     "log"
-    _ "net/http"
 )
  
 // Function to generate an enrollment token
@@ -22,16 +17,16 @@ import (
 //}
 
 // Function to enroll a Drone into the Hive inventory
-func enrollDrone(db *sql.DB) {
-    var droneAddress string = "10.13.0.25"
-    var dronePort int = 3802
-    var droneName string = "drone-1"
-    var execStr string = fmt.Sprintf(`INSERT INTO drones (id, address, port, name)
-                                      VALUES (DEFAULT, '%s', %v, '%s')`,
-                                      droneAddress, dronePort, droneName)
-    db.Exec(execStr)
-    log.Printf("drone \"%s\" Enrolled", droneName)
-}
+//func enrollDrone(db *sql.DB) {
+//    var droneAddress string = "10.13.0.25"
+//    var dronePort int = 3802
+//    var droneName string = "drone-1"
+//    var execStr string = fmt.Sprintf(`INSERT INTO drones (id, address, port, name)
+//                                      VALUES (DEFAULT, '%s', %v, '%s')`,
+//                                      droneAddress, dronePort, droneName)
+//    db.Exec(execStr)
+//    log.Printf("drone \"%s\" Enrolled", droneName)
+//}
 
 func main() {
     log.SetFlags(log.Lshortfile)
@@ -39,5 +34,5 @@ func main() {
 
     HiveCmd.Execute()
 
-    //genEnrollmentToken(db, vi.GetString("host"), vi.GetInt("port"))
+//    genEnrollmentToken(db, vi.GetString("host"), vi.GetInt("port"))
 }
