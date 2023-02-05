@@ -10,7 +10,6 @@ import (
     _ "github.com/jackc/pgx/v5/stdlib"
 	"github.com/spf13/cobra"
     "github.com/spf13/viper"
-	"os"
 )
 
 // Function to initialize Viper
