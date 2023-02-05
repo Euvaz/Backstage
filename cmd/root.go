@@ -159,6 +159,11 @@ func dbConnect(host string, port int, user string, pass string, name string) *sq
     return database
 }
 
+func dbClose(database *sql.DB) {
+    db.Close()
+    log.Printf("Database connection closed")
+}
+
 var (
     vi = initViper()
     db = dbConnect(vi.GetString("dbHost"), vi.GetInt("dbPort"), vi.GetString("dbUser"),
@@ -176,8 +181,7 @@ var (
         Run: func(cmd *cobra.Command, args []string) {
             // Initialize database
             initDB(db)
-            defer log.Printf("Database connection closed")
-            defer db.Close()
+            defer dbClose(db)
         },
     }
 )
