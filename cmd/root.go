@@ -147,8 +147,6 @@ func dbConnect(host string, port int, user string, pass string, name string) *sq
         log.Fatalln(err)
         os.Exit(1)
     }
-    //defer log.Printf("Database connection closed")
-    //defer database.Close()
 
     // Verify database connection
     err = database.Ping()
@@ -158,8 +156,6 @@ func dbConnect(host string, port int, user string, pass string, name string) *sq
     }
     log.Printf("Connection established")
 
-    // Initialize database
-    //initDB(db)
     return database
 }
 
@@ -167,19 +163,21 @@ var (
     vi = initViper()
     db = dbConnect(vi.GetString("dbHost"), vi.GetInt("dbPort"), vi.GetString("dbUser"),
                    vi.GetString("dbPass"), vi.GetString("dbName"))
-    HiveCmd = &cobra.Command{
+
+    HiveCmd = &cobra.Command {
 	    Use:   "Backstage-Hive",
 	    Short: "Short Desc",
-	    Long: `Long
-               Desc`,
+	    Long:  `Long
+                Desc`,
 
         PersistentPreRun: func(cmd *cobra.Command, args []string) {
-            initDB(db)
-            defer log.Printf("Database connection closed")
-            defer db.Close()
         },
 
         Run: func(cmd *cobra.Command, args []string) {
+            // Initialize database
+            initDB(db)
+            defer log.Printf("Database connection closed")
+            defer db.Close()
         },
     }
 )
