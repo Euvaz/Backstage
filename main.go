@@ -76,7 +76,6 @@ func main() {
     // Add subcommands
     createCmd.AddCommand(createTokenCmd)
 
-    //    genEnrollmentToken(db, vi.GetString("host"), vi.GetInt("port"))
 
 	err = cmd.Execute()
 	if err != nil {
