@@ -1,8 +1,8 @@
 package main
  
 import (
+    "github.com/Euvaz/Backstage-Hive/logger"
     "github.com/Euvaz/Backstage-Hive/cmd"
-    "log"
 )
  
 // Function to generate an enrollment token
@@ -29,10 +29,7 @@ import (
 //}
 
 func main() {
-    log.SetFlags(log.Lshortfile)
-    log.SetPrefix("Backstage-Hive: ")
-
-    HiveCmd.Execute()
+    cmd.Execute()
 
 //    genEnrollmentToken(db, vi.GetString("host"), vi.GetInt("port"))
 }

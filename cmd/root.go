@@ -1,15 +1,15 @@
-package HiveCmd
+package cmd
 
 import (
     "crypto/rand"
     "database/sql"
     "encoding/base64"
     "fmt"
+    "github.com/Euvaz/Backstage-Hive/logger"
     _ "github.com/gin-gonic/gin"
     _ "github.com/jackc/pgx/v5/stdlib"
 	"github.com/spf13/cobra"
     "github.com/spf13/viper"
-    "log"
 	"os"
 )
 
@@ -19,7 +19,7 @@ func initViper() *viper.Viper {
     viper.SetConfigFile("config.toml")
     err := viper.ReadInConfig()
     if err != nil {
-        log.Fatalln(err)
+        logger.Fatal(err.Error())
         os.Exit(1)
     }
 
@@ -38,11 +38,11 @@ func initViper() *viper.Viper {
 func initDB(db *sql.DB) {
     var err error
 
-    log.Printf("Initializing Tables...")
-    defer log.Printf("Tables successfully initialized")
+    logger.Info("Initializing Tables...")
+    defer logger.Info("Tables successfully initialized")
     
     // Create "drones" table
-    log.Printf("Creating \"drones\" table if not already present...")
+    logger.Info("Creating \"drones\" table if not already present...")
     _, err = db.Exec(`CREATE TABLE IF NOT EXISTS drones (
                         id SERIAL PRIMARY KEY,
                         address INET,
@@ -52,23 +52,23 @@ func initDB(db *sql.DB) {
                         UNIQUE (name)
                       )`)
     if err != nil {
-        log.Fatalln(err)
+        logger.Fatal(err.Error())
     }
-    log.Printf("Success")
+    logger.Info("Success")
 
     // Create "permissions" table
-    log.Printf("Creating \"permissions\" table if not already present...")
+    logger.Info("Creating \"permissions\" table if not already present...")
     _, err = db.Exec(`CREATE TABLE IF NOT EXISTS permissions (
                         id SERIAL PRIMARY KEY,
                         name TEXT
                       )`)
     if err != nil {
-        log.Fatalln(err)
+        logger.Fatal(err.Error())
     }
-    log.Printf("Success")
+    logger.Info("Success")
 
     // Create "groups" table
-    log.Printf("Creating \"groups\" table if not already present...")
+    logger.Info("Creating \"groups\" table if not already present...")
     _, err = db.Exec(`CREATE TABLE IF NOT EXISTS groups (
                         id SERIAL PRIMARY KEY,
                         name TEXT,
@@ -77,12 +77,12 @@ func initDB(db *sql.DB) {
                         UNIQUE (name)
                       )`)
     if err != nil {
-        log.Fatalln(err)
+        logger.Fatal(err.Error())
     }
-    log.Printf("Success")
+    logger.Info("Success")
 
     // Create "swarms" table
-    log.Printf("Creating \"swarms\" table if not already present...")
+    logger.Info("Creating \"swarms\" table if not already present...")
     _, err = db.Exec(`CREATE TABLE IF NOT EXISTS swarms (
                         id SERIAL PRIMARY KEY,
                         name TEXT,
@@ -91,12 +91,12 @@ func initDB(db *sql.DB) {
                         UNIQUE (name)
                       )`)
     if err != nil {
-        log.Fatalln(err)
+        logger.Fatal(err.Error())
     }
-    log.Printf("Success")
+    logger.Info("Success")
 
     // Create "tokens" table
-    log.Printf("Creating \"tokens\" table if not alrady present...")
+    logger.Info("Creating \"tokens\" table if not alrady present...")
     _, err = db.Exec(`CREATE TABLE IF NOT EXISTS tokens (
                         id SERIAL PRIMARY KEY,
                         key TEXT,
@@ -104,12 +104,12 @@ func initDB(db *sql.DB) {
                         UNIQUE (key)
                       )`)
     if err != nil {
-        log.Fatalln(err)
+        logger.Fatal(err.Error())
     }
-    log.Printf("Success")
+    logger.Info("Success")
 
     // Create "users" table
-    log.Printf("Creating \"users\" table if not already present...")
+    logger.Info("Creating \"users\" table if not already present...")
     _, err = db.Exec(`CREATE TABLE IF NOT EXISTS users (
                         id SERIAL PRIMARY KEY,
                         name TEXT,
@@ -120,9 +120,9 @@ func initDB(db *sql.DB) {
                         UNIQUE (name)
                       )`)
     if err != nil {
-        log.Fatalln(err)
+        logger.Fatal(err.Error())
     }
-    log.Printf("Success")
+    logger.Info("Success")
 }
 
 // Function to generate a random alphanumeric string of set length
@@ -130,7 +130,7 @@ func RandStringBytes(n int) string {
     randomBytes := make([]byte, 64)
     _, err := rand.Read(randomBytes)
     if err != nil {
-        log.Println(err)
+        logger.Fatal(err.Error())
     }
     return base64.StdEncoding.EncodeToString(randomBytes)[:n]
 }
@@ -141,27 +141,27 @@ func dbConnect(host string, port int, user string, pass string, name string) *sq
                              host, port, user, pass, name)
 
     // Connect to database
-    log.Printf("Connecting to database...")
+    logger.Info("Connecting to database...")
     database, err := sql.Open("pgx", psqlconn)
     if err != nil {
-        log.Fatalln(err)
+        logger.Fatal(err.Error())
         os.Exit(1)
     }
 
     // Verify database connection
     err = database.Ping()
     if err != nil {
-        log.Fatalln(err)
+        logger.Fatal(err.Error())
         os.Exit(1)
     }
-    log.Printf("Connection established")
+    logger.Info("Connection established")
 
     return database
 }
 
 func dbClose(database *sql.DB) {
     db.Close()
-    log.Printf("Database connection closed")
+    logger.Info("Database connection closed")
 }
 
 var (
