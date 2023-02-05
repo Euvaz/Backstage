@@ -16,7 +16,7 @@ import (
 // Function to initialize Viper
 func initViper() *viper.Viper {
     viper := viper.New()
-    viper.SetConfigFile("config.yaml")
+    viper.SetConfigFile("config.toml")
     err := viper.ReadInConfig()
     if err != nil {
         log.Fatalln(err)
