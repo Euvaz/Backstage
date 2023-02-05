@@ -1,7 +1,6 @@
 package main
  
 import (
-    "github.com/Euvaz/Backstage-Hive/logger"
     "github.com/Euvaz/Backstage-Hive/cmd"
 )
  
