@@ -200,7 +200,7 @@ func genEnrollmentToken(db *sql.DB, host string, port int) {
    var execStr string = fmt.Sprintf(`INSERT INTO tokens (id, key, created)
                                       VALUES (DEFAULT, '%s', CURRENT_TIMESTAMP)`, key)
     db.Exec(execStr)
-    fmt.Println(`Generated Token: "%s"`, enrollmentToken)
+    fmt.Println("Generated Token:", enrollmentToken)
     logger.Debug("Created token")
 }
 
