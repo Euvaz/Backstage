@@ -1,7 +1,9 @@
 package main
 
 import (
+    "crypto/rand"
 	"database/sql"
+    "encoding/base64"
 	"fmt"
 
     "github.com/Euvaz/Backstage-Hive/logger"
@@ -29,7 +31,8 @@ func main() {
 
 	db := getDB(viper.GetString("dbHost"), viper.GetInt("dbPort"), viper.GetString("dbUser"), viper.GetString("dbPass"), viper.GetString("dbName"))
 
-	cmd := &cobra.Command{
+    // Add root command
+	cmd := &cobra.Command {
 		Use:   "Backstage-Hive",
 		Short: "Short Desc",
 		Long:  `Long Desc`,
@@ -42,12 +45,53 @@ func main() {
 		},
 	}
 
+    // Add command
+    createCmd := &cobra.Command {
+        Use:   "create",
+        Short: "Short Desc",
+        Long:  `Long Desc`,
+    }
+
+    // Add subcommand
+    createTokenCmd := &cobra.Command {
+        Use:   "token",
+        Short: "Short Desc",
+        Long:  `Long Desc`,
+        Run: func(cmd *cobra.Command, args []string) {
+            genEnrollmentToken(db, viper.GetString("host"), viper.GetInt("port"))
+        },
+    }
+
+    // Add command
+    getCmd := &cobra.Command {
+        Use:   "get",
+        Short: "Short Desc",
+        Long:  `Long Desc`,
+    }
+
+    // Add commands
+    cmd.AddCommand(createCmd)
+    cmd.AddCommand(getCmd)
+
+    // Add subcommands
+    createCmd.AddCommand(createTokenCmd)
+
     //    genEnrollmentToken(db, vi.GetString("host"), vi.GetInt("port"))
 
 	err = cmd.Execute()
 	if err != nil {
 		logger.Fatal(err.Error())
 	}
+}
+
+// Function to generate a random alphanumeric string of set length
+func RandStringBytes(n int) string {
+    randomBytes := make([]byte, 64)
+    _, err := rand.Read(randomBytes)
+    if err != nil {
+        logger.Fatal(err.Error())
+    }
+    return base64.StdEncoding.EncodeToString(randomBytes)[:n]
 }
 
 func initDB(db *sql.DB) {
@@ -125,7 +169,7 @@ func getDB(host string, port int, user string, pass string, name string) *sql.DB
 	psqlconn := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable",
 		host, port, user, pass, name)
 
-	logger.Info("Connecting to database...")
+	logger.Debug("Connecting to database...")
 	database, err := sql.Open("pgx", psqlconn)
 	if err != nil {
 		logger.Fatal(err.Error())
@@ -135,7 +179,7 @@ func getDB(host string, port int, user string, pass string, name string) *sql.DB
 	if err != nil {
 		logger.Fatal(err.Error())
 	}
-	logger.Info("Connection established")
+	logger.Debug("Connection established")
 
 	return database
 }
@@ -148,6 +192,18 @@ func closeDB(db *sql.DB) {
 	logger.Info("Database connection closed")
 }
 
+// Function to generate an enrollment token
+func genEnrollmentToken(db *sql.DB, host string, port int) {
+    logger.Debug("Creating token...")
+    var key string = RandStringBytes(50)
+    var enrollmentToken string = base64.StdEncoding.EncodeToString([]byte(fmt.Sprintf(`{"addr":"%s:%v","key":"%s"}`, host, port, key)))
+   var execStr string = fmt.Sprintf(`INSERT INTO tokens (id, key, created)
+                                      VALUES (DEFAULT, '%s', CURRENT_TIMESTAMP)`, key)
+    db.Exec(execStr)
+    fmt.Println(`Generated Token: "%s"`, enrollmentToken)
+    logger.Debug("Created token")
+}
+
 // Function to enroll a Drone into the Hive inventory
 //func enrollDrone(db *sql.DB) {
 //    var droneAddress string = "10.13.0.25"
@@ -158,15 +214,4 @@ func closeDB(db *sql.DB) {
 //                                      droneAddress, dronePort, droneName)
 //    db.Exec(execStr)
 //    logger.Infof("drone \"%s\" Enrolled", droneName)
-//}
-
-// Function to generate an enrollment token
-//func genEnrollmentToken(db *sql.DB, host string, port int) {
-//    var key string = RandStringBytes(50)
-//    var enrollmentToken string = base64.StdEncoding.EncodeToString([]byte(fmt.Sprintf(`{"addr":"%s:%v","key":"%s"}`, host, port, key)))
-//    var execStr string = fmt.Sprintf(`INSERT INTO tokens (id, key, created)
-//                                      VALUES (DEFAULT, '%s', CURRENT_TIMESTAMP)`, key)
-//    db.Exec(execStr)
-//    log.Printf("Generated Token: \"%s\"", enrollmentToken)
-//    log.Printf("Generated Key: \"%s\"", key)
 //}
