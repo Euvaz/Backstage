@@ -20,7 +20,6 @@ func initViper() *viper.Viper {
     err := viper.ReadInConfig()
     if err != nil {
         logger.Fatal(err.Error())
-        os.Exit(1)
     }
 
     viper.SetDefault("host", "localhost")
@@ -145,14 +144,12 @@ func dbConnect(host string, port int, user string, pass string, name string) *sq
     database, err := sql.Open("pgx", psqlconn)
     if err != nil {
         logger.Fatal(err.Error())
-        os.Exit(1)
     }
 
     // Verify database connection
     err = database.Ping()
     if err != nil {
         logger.Fatal(err.Error())
-        os.Exit(1)
     }
     logger.Info("Connection established")
 
@@ -189,7 +186,7 @@ var (
 func Execute() {
 	err := HiveCmd.Execute()
 	if err != nil {
-		os.Exit(1)
+        logger.Fatal(err.Error())
 	}
 }
 
