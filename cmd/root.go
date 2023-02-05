@@ -157,7 +157,10 @@ func dbConnect(host string, port int, user string, pass string, name string) *sq
 }
 
 func dbClose(database *sql.DB) {
-    db.Close()
+    err := db.Close()
+    if err != nil {
+        logger.Fatal(err.Error())
+    }
     logger.Debug("Database connection closed")
 }
 
