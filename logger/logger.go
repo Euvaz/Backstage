@@ -9,10 +9,10 @@ var zapLog *zap.Logger
 func init() {
     var err error
     config := zap.NewProductionConfig()
-    enccoderConfig := zap.NewProductionEncoderConfig()
+    encoderConfig := zap.NewProductionEncoderConfig()
     zapcore.TimeEncoderOfLayout("Jan _2 15:04:05.000000000")
-    enccoderConfig.StacktraceKey = ""
-    config.EncoderConfig = enccoderConfig
+    encoderConfig.StacktraceKey = ""
+    config.EncoderConfig = encoderConfig
 
     zapLog, err = config.Build(zap.AddCallerSkip(1))
     if err != nil {
