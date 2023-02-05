@@ -36,11 +36,11 @@ func initViper() *viper.Viper {
 func initDB(db *sql.DB) {
     var err error
 
-    logger.Info("Initializing Tables...")
-    defer logger.Info("Tables successfully initialized")
+    logger.Debug("Initializing Tables...")
+    defer logger.Debug("Tables successfully initialized")
     
     // Create "drones" table
-    logger.Info("Creating \"drones\" table if not already present...")
+    logger.Debug("Creating \"drones\" table if not already present...")
     _, err = db.Exec(`CREATE TABLE IF NOT EXISTS drones (
                         id SERIAL PRIMARY KEY,
                         address INET,
@@ -52,10 +52,10 @@ func initDB(db *sql.DB) {
     if err != nil {
         logger.Fatal(err.Error())
     }
-    logger.Info("Success")
+    logger.Debug("Success")
 
     // Create "permissions" table
-    logger.Info("Creating \"permissions\" table if not already present...")
+    logger.Debug("Creating \"permissions\" table if not already present...")
     _, err = db.Exec(`CREATE TABLE IF NOT EXISTS permissions (
                         id SERIAL PRIMARY KEY,
                         name TEXT
@@ -63,10 +63,10 @@ func initDB(db *sql.DB) {
     if err != nil {
         logger.Fatal(err.Error())
     }
-    logger.Info("Success")
+    logger.Debug("Success")
 
     // Create "groups" table
-    logger.Info("Creating \"groups\" table if not already present...")
+    logger.Debug("Creating \"groups\" table if not already present...")
     _, err = db.Exec(`CREATE TABLE IF NOT EXISTS groups (
                         id SERIAL PRIMARY KEY,
                         name TEXT,
@@ -77,10 +77,10 @@ func initDB(db *sql.DB) {
     if err != nil {
         logger.Fatal(err.Error())
     }
-    logger.Info("Success")
+    logger.Debug("Success")
 
     // Create "swarms" table
-    logger.Info("Creating \"swarms\" table if not already present...")
+    logger.Debug("Creating \"swarms\" table if not already present...")
     _, err = db.Exec(`CREATE TABLE IF NOT EXISTS swarms (
                         id SERIAL PRIMARY KEY,
                         name TEXT,
@@ -91,10 +91,10 @@ func initDB(db *sql.DB) {
     if err != nil {
         logger.Fatal(err.Error())
     }
-    logger.Info("Success")
+    logger.Debug("Success")
 
     // Create "tokens" table
-    logger.Info("Creating \"tokens\" table if not alrady present...")
+    logger.Debug("Creating \"tokens\" table if not alrady present...")
     _, err = db.Exec(`CREATE TABLE IF NOT EXISTS tokens (
                         id SERIAL PRIMARY KEY,
                         key TEXT,
@@ -104,10 +104,10 @@ func initDB(db *sql.DB) {
     if err != nil {
         logger.Fatal(err.Error())
     }
-    logger.Info("Success")
+    logger.Debug("Success")
 
     // Create "users" table
-    logger.Info("Creating \"users\" table if not already present...")
+    logger.Debug("Creating \"users\" table if not already present...")
     _, err = db.Exec(`CREATE TABLE IF NOT EXISTS users (
                         id SERIAL PRIMARY KEY,
                         name TEXT,
@@ -120,7 +120,7 @@ func initDB(db *sql.DB) {
     if err != nil {
         logger.Fatal(err.Error())
     }
-    logger.Info("Success")
+    logger.Debug("Success")
 }
 
 // Function to generate a random alphanumeric string of set length
@@ -139,7 +139,7 @@ func dbConnect(host string, port int, user string, pass string, name string) *sq
                              host, port, user, pass, name)
 
     // Connect to database
-    logger.Info("Connecting to database...")
+    logger.Debug("Connecting to database...")
     database, err := sql.Open("pgx", psqlconn)
     if err != nil {
         logger.Fatal(err.Error())
@@ -150,14 +150,14 @@ func dbConnect(host string, port int, user string, pass string, name string) *sq
     if err != nil {
         logger.Fatal(err.Error())
     }
-    logger.Info("Connection established")
+    logger.Debug("Connection established")
 
     return database
 }
 
 func dbClose(database *sql.DB) {
     db.Close()
-    logger.Info("Database connection closed")
+    logger.Debug("Database connection closed")
 }
 
 var (
@@ -175,6 +175,7 @@ var (
         },
 
         Run: func(cmd *cobra.Command, args []string) {
+            logger.Info("Starting server")
             // Initialize database
             initDB(db)
             defer dbClose(db)
