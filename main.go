@@ -206,14 +206,26 @@ func genEnrollmentToken(db *sql.DB, host string, port int) {
     logger.Debug("Created token")
 }
 
+// TODO: Patch SQL injection
+// Function to verify authenticity of enrollment key
+//func enrollmentKeyIsValid(db *sql.DB, key string) {
+//    keyCount , err := db.Query(`SELECT COUNT (*) FROM tokens WHERE key = '%s'`, key)
+//    if err != nil {
+//        logger.Fatal(err.Error())
+//    }
+//
+//    fmt.Println(keyCount)
+//}
+
+// TODO: Patch SQL injection
 // Function to enroll a Drone into the Hive inventory
-//func enrollDrone(db *sql.DB) {
-//    var droneAddress string = "10.13.0.25"
-//    var dronePort int = 3802
-//    var droneName string = "drone-1"
+//func enrollDrone(db *sql.DB, droneAddress string, dronePort int, droneName string) {
 //    var execStr string = fmt.Sprintf(`INSERT INTO drones (id, address, port, name)
 //                                      VALUES (DEFAULT, '%s', %v, '%s')`,
 //                                      droneAddress, dronePort, droneName)
-//    db.Exec(execStr)
-//    logger.Infof("drone \"%s\" Enrolled", droneName)
+//    _, err := db.Exec(execStr)
+//    if err != nil {
+//        logger.Fatal(err.Error())
+//    }
+//    logger.Info(fmt.Sprintf(`Drone "%s" Enrolled`, droneName))
 //}
