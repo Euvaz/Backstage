@@ -7,7 +7,7 @@ import (
 	"fmt"
 
     "github.com/Euvaz/Backstage-Hive/logger"
-	_ "github.com/gin-gonic/gin"
+	"github.com/gin-gonic/gin"
 	_ "github.com/jackc/pgx/v5/stdlib"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -42,6 +42,10 @@ func main() {
 			logger.Info("Starting server")
 			initDB(db)
 			defer closeDB(db)
+
+            router := gin.Default()
+            registerRoutes(router, db)
+            router.Run(fmt.Sprintf("%s:%d", viper.GetString("host"), viper.GetInt("port")))
 		},
 	}
 
