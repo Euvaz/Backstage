@@ -69,12 +69,41 @@ func main() {
         Long:  `Long Desc`,
     }
 
+    // Add subcommand
+    getTokenCmd := &cobra.Command {
+        Use:   "token",
+        Short: "Short Desc",
+        Long:  `Long Desc`,
+        Run: func(cmd *cobra.Command, args []string) {
+            rows, err := db.Query(`SELECT key, created FROM tokens`)
+            if err != nil {
+                logger.Fatal(err.Error())
+            }
+            defer rows.Close()
+
+            f := "%-50s %s\n"
+            fmt.Printf(f, "KEY", "CREATED")
+            var key string
+            var created string
+            for rows.Next() {
+                if err := rows.Scan(&key, &created); err != nil {
+                    logger.Fatal(err.Error())
+                }
+                fmt.Printf(f, key, created)
+            }
+            if err = rows.Err(); err != nil {
+                logger.Fatal(err.Error())
+            }
+        },
+    }
+
     // Add commands
     cmd.AddCommand(createCmd)
     cmd.AddCommand(getCmd)
 
     // Add subcommands
     createCmd.AddCommand(createTokenCmd)
+    getCmd.AddCommand(getTokenCmd)
 
 
 	err = cmd.Execute()
