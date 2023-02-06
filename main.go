@@ -206,14 +206,22 @@ func genEnrollmentToken(db *sql.DB, host string, port int) {
 }
 
 // Function to verify authenticity of enrollment key
-//func enrollmentKeyIsValid(db *sql.DB, key string) {
-//    keyCount , err := db.Query(`SELECT COUNT (*) FROM tokens WHERE key = '%s'`, key)
-//    if err != nil {
-//        logger.Fatal(err.Error())
-//    }
-//
-//    fmt.Println(keyCount)
-//}
+func enrollmentKeyIsValid(db *sql.DB, key string) bool {
+    var count string
+    rows := db.QueryRow(`SELECT COUNT (*) FROM tokens WHERE key = $1`, key)
+
+    err := rows.Scan(&count)
+    if err != nil {
+        logger.Fatal(err.Error())
+    }
+
+    switch count {
+    case "1":
+        return true
+    default:
+        return false
+    }
+}
 
 // Function to enroll a Drone into the Hive inventory
 func enrollDrone(db *sql.DB, droneAddress string, dronePort int, droneName string) {
