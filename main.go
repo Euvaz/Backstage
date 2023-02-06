@@ -58,7 +58,16 @@ func main() {
         Short: "Short Desc",
         Long:  `Long Desc`,
         Run: func(cmd *cobra.Command, args []string) {
-            genEnrollmentToken(db, viper.GetString("host"), viper.GetInt("port"))
+            logger.Debug("Creating token...")
+            var key string = RandStringBytes(50)
+            var enrollmentToken string = base64.StdEncoding.EncodeToString([]byte(fmt.Sprintf(`{"addr":"%s:%v","key":"%s"}`, viper.GetString("host"), viper.GetInt("port"), key)))
+            _, err := db.Exec(`INSERT INTO tokens (id, key, created)
+                               VALUES (DEFAULT, $1, CURRENT_TIMESTAMP)`, key)
+            if err != nil {
+                logger.Fatal(err.Error())
+            }
+            fmt.Println("Generated Token:", enrollmentToken)
+            logger.Debug("Created token")
         },
     }
 
@@ -218,20 +227,6 @@ func closeDB(db *sql.DB) {
 		logger.Fatal(err.Error())
 	}
 	logger.Info("Database connection closed")
-}
-
-// Function to generate an enrollment token
-func genEnrollmentToken(db *sql.DB, host string, port int) {
-    logger.Debug("Creating token...")
-    var key string = RandStringBytes(50)
-    var enrollmentToken string = base64.StdEncoding.EncodeToString([]byte(fmt.Sprintf(`{"addr":"%s:%v","key":"%s"}`, host, port, key)))
-    _, err := db.Exec(`INSERT INTO tokens (id, key, created)
-                       VALUES (DEFAULT, $1, CURRENT_TIMESTAMP)`, key)
-    if err != nil {
-        logger.Fatal(err.Error())
-    }
-    fmt.Println("Generated Token:", enrollmentToken)
-    logger.Debug("Created token")
 }
 
 // Function to verify authenticity of enrollment key
