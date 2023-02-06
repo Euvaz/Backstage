@@ -196,9 +196,8 @@ func genEnrollmentToken(db *sql.DB, host string, port int) {
     logger.Debug("Creating token...")
     var key string = RandStringBytes(50)
     var enrollmentToken string = base64.StdEncoding.EncodeToString([]byte(fmt.Sprintf(`{"addr":"%s:%v","key":"%s"}`, host, port, key)))
-    var execStr string = fmt.Sprintf(`INSERT INTO tokens (id, key, created)
-                                      VALUES (DEFAULT, '%s', CURRENT_TIMESTAMP)`, key)
-    _, err := db.Exec(execStr)
+    _, err := db.Exec(`INSERT INTO tokens (id, key, created)
+                       VALUES (DEFAULT, $1, CURRENT_TIMESTAMP)`, key)
     if err != nil {
         logger.Fatal(err.Error())
     }
@@ -206,7 +205,6 @@ func genEnrollmentToken(db *sql.DB, host string, port int) {
     logger.Debug("Created token")
 }
 
-// TODO: Patch SQL injection
 // Function to verify authenticity of enrollment key
 //func enrollmentKeyIsValid(db *sql.DB, key string) {
 //    keyCount , err := db.Query(`SELECT COUNT (*) FROM tokens WHERE key = '%s'`, key)
@@ -217,15 +215,12 @@ func genEnrollmentToken(db *sql.DB, host string, port int) {
 //    fmt.Println(keyCount)
 //}
 
-// TODO: Patch SQL injection
 // Function to enroll a Drone into the Hive inventory
-//func enrollDrone(db *sql.DB, droneAddress string, dronePort int, droneName string) {
-//    var execStr string = fmt.Sprintf(`INSERT INTO drones (id, address, port, name)
-//                                      VALUES (DEFAULT, '%s', %v, '%s')`,
-//                                      droneAddress, dronePort, droneName)
-//    _, err := db.Exec(execStr)
-//    if err != nil {
-//        logger.Fatal(err.Error())
-//    }
-//    logger.Info(fmt.Sprintf(`Drone "%s" Enrolled`, droneName))
-//}
+func enrollDrone(db *sql.DB, droneAddress string, dronePort int, droneName string) {
+    _, err := db.Exec(`INSERT INTO drones (id, address, port, name)
+                       VALUES (DEFAULT, $1, $2, $3)`, droneAddress, dronePort, droneName)
+    if err != nil {
+        logger.Fatal(err.Error())
+    }
+    logger.Info(fmt.Sprintf(`Drone "%s" Enrolled`, droneName))
+}
