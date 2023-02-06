@@ -196,9 +196,12 @@ func genEnrollmentToken(db *sql.DB, host string, port int) {
     logger.Debug("Creating token...")
     var key string = RandStringBytes(50)
     var enrollmentToken string = base64.StdEncoding.EncodeToString([]byte(fmt.Sprintf(`{"addr":"%s:%v","key":"%s"}`, host, port, key)))
-   var execStr string = fmt.Sprintf(`INSERT INTO tokens (id, key, created)
+    var execStr string = fmt.Sprintf(`INSERT INTO tokens (id, key, created)
                                       VALUES (DEFAULT, '%s', CURRENT_TIMESTAMP)`, key)
-    db.Exec(execStr)
+    _, err := db.Exec(execStr)
+    if err != nil {
+        logger.Fatal(err.Error())
+    }
     fmt.Println("Generated Token:", enrollmentToken)
     logger.Debug("Created token")
 }
