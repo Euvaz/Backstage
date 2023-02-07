@@ -61,6 +61,7 @@ func main() {
         Use:   "token",
         Short: "Short Desc",
         Long:  `Long Desc`,
+        Aliases: []string{"tok", "tokens"},
         Run: func(cmd *cobra.Command, args []string) {
             logger.Debug("Creating token...")
             var key string = RandStringBytes(50)
@@ -83,11 +84,11 @@ func main() {
     }
 
     // Add subcommand
-    getTokensCmd := &cobra.Command {
-        Use:   "tokens",
+    getTokenCmd := &cobra.Command {
+        Use:   "token",
         Short: "Short Desc",
         Long:  `Long Desc`,
-        Aliases: []string{"tok", "token"},
+        Aliases: []string{"tok", "tokens"},
         Run: func(cmd *cobra.Command, args []string) {
             rows, err := db.Query(`SELECT key, created FROM tokens`)
             if err != nil {
@@ -117,7 +118,7 @@ func main() {
 
     // Add subcommands
     createCmd.AddCommand(createTokenCmd)
-    getCmd.AddCommand(getTokensCmd)
+    getCmd.AddCommand(getTokenCmd)
 
 
 	err = cmd.Execute()
