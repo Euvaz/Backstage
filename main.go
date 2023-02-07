@@ -83,10 +83,11 @@ func main() {
     }
 
     // Add subcommand
-    getTokenCmd := &cobra.Command {
-        Use:   "token",
+    getTokensCmd := &cobra.Command {
+        Use:   "tokens",
         Short: "Short Desc",
         Long:  `Long Desc`,
+        Aliases: []string{"tok", "token"},
         Run: func(cmd *cobra.Command, args []string) {
             rows, err := db.Query(`SELECT key, created FROM tokens`)
             if err != nil {
@@ -116,7 +117,7 @@ func main() {
 
     // Add subcommands
     createCmd.AddCommand(createTokenCmd)
-    getCmd.AddCommand(getTokenCmd)
+    getCmd.AddCommand(getTokensCmd)
 
 
 	err = cmd.Execute()
