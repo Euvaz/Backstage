@@ -252,13 +252,3 @@ func enrollmentKeyIsValid(db *sql.DB, key string) bool {
         return false
     }
 }
-
-// Function to enroll a Drone into the Hive inventory
-func enrollDrone(db *sql.DB, droneAddress string, dronePort int, droneName string) {
-    _, err := db.Exec(`INSERT INTO drones (id, address, port, name)
-                       VALUES (DEFAULT, $1, $2, $3)`, droneAddress, dronePort, droneName)
-    if err != nil {
-        logger.Fatal(err.Error())
-    }
-    logger.Info(fmt.Sprintf(`Drone "%s" Enrolled`, droneName))
-}

@@ -3,6 +3,7 @@ package main
 import (
 	"database/sql"
     "encoding/json"
+    "fmt"
 	"io/ioutil"
 	_ "net/http"
 
@@ -19,7 +20,7 @@ func registerRoutes (router *gin.Engine, db *sql.DB) {
     router.POST("/drones/:name", func(ctx *gin.Context) {
         logger.Info("Handling POST /drones")
         name := ctx.Param("name")
-        logger.Info(name)
+        //logger.Info(name)
 
         jsonData, err := ioutil.ReadAll(ctx.Request.Body)
         if err != nil {
@@ -35,6 +36,14 @@ func registerRoutes (router *gin.Engine, db *sql.DB) {
             ctx.AbortWithStatus(400)
             return
         }
-        logger.Info(string(token.Key))
+
+        if enrollmentKeyIsValid(db, token.Key) {
+            _, err := db.Exec(`INSERT INTO drones (id, address, port, name)
+                               VALUES (DEFAULT, $1, $2, $3)`, address, port, name)
+            if err != nil {
+                logger.Fatal(err.Error())
+            }
+            logger.Info(fmt.Sprintf(`Drone "%s" Enrolled`, name))
+        }
     })
 }
