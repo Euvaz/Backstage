@@ -24,6 +24,8 @@ func registerRoutes (router *gin.Engine, db *sql.DB) {
         jsonData, err := ioutil.ReadAll(ctx.Request.Body)
         if err != nil {
             logger.Error(err.Error())
+            ctx.AbortWithStatus(400)
+            return
         }
 
         var token models.TokenKey
@@ -31,6 +33,7 @@ func registerRoutes (router *gin.Engine, db *sql.DB) {
         if err != nil {
             logger.Error(err.Error())
             ctx.AbortWithStatus(400)
+            return
         }
         logger.Info(string(token.Key))
     })
