@@ -6,6 +6,7 @@ import (
     "fmt"
     "io/ioutil"
     _ "net/http"
+    "strings"
 
     "github.com/Euvaz/Backstage-Hive/logger"
     "github.com/Euvaz/Backstage-Hive/models"
@@ -29,7 +30,7 @@ func registerRoutes (router *gin.Engine, db *sql.DB) {
             return
         }
 
-        var token models.TokenKey
+        var token models.Token
         err = json.Unmarshal(jsonData, &token)
         if err != nil {
             logger.Error(err.Error())
@@ -37,9 +38,11 @@ func registerRoutes (router *gin.Engine, db *sql.DB) {
             return
         }
 
+        addr := strings.Split(token.Addr, ":")
+
         if enrollmentKeyIsValid(db, token.Key) {
             _, err := db.Exec(`INSERT INTO drones (id, address, port, name)
-                               VALUES (DEFAULT, $1, $2, $3)`, address, port, name)
+                               VALUES (DEFAULT, $1, $2, $3)`, addr[0], addr[1], name)
             if err != nil {
                 logger.Fatal(err.Error())
             }
