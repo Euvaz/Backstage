@@ -2,10 +2,14 @@ module github.com/Euvaz/Backstage-Hive
 
 go 1.19
 
-replace github.com/Euvaz/Backstage-Hive/logger => ./logger
+replace (
+	github.com/Euvaz/Backstage-Hive/logger => ./logger
+	github.com/Euvaz/Backstage-Hive/models => ./models
+)
 
 require (
 	github.com/Euvaz/Backstage-Hive/logger v0.0.0-00010101000000-000000000000
+	github.com/Euvaz/Backstage-Hive/models v0.0.0-00010101000000-000000000000
 	github.com/gin-gonic/gin v1.8.2
 	github.com/jackc/pgx/v5 v5.2.0
 	github.com/spf13/cobra v1.6.1

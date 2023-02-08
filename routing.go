@@ -7,12 +7,9 @@ import (
 	_ "net/http"
 
 	"github.com/Euvaz/Backstage-Hive/logger"
+    "github.com/Euvaz/Backstage-Hive/models"
 	"github.com/gin-gonic/gin"
 )
-
-type Token struct {
-    Key string  `json:"key"`
-}
 
 func registerRoutes (router *gin.Engine, db *sql.DB) {
     router.GET("/drones/:name", func(ctx *gin.Context) {
@@ -29,7 +26,7 @@ func registerRoutes (router *gin.Engine, db *sql.DB) {
             logger.Error(err.Error())
         }
 
-        var token Token
+        var token models.Token
         err = json.Unmarshal(jsonData, &token)
         if err != nil {
             logger.Fatal(err.Error())
