@@ -1,6 +1,6 @@
 host = "localhost"
 port = 3894
-dbHost = "localhost"
+dbHost = "127.0.0.1"
 dbPort = 5432
 dbUser = "user"
 dbPass = "pass"
