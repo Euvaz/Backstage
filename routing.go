@@ -1,15 +1,15 @@
 package main
 
 import (
-	"database/sql"
+    "database/sql"
     "encoding/json"
     "fmt"
-	"io/ioutil"
-	_ "net/http"
+    "io/ioutil"
+    _ "net/http"
 
-	"github.com/Euvaz/Backstage-Hive/logger"
+    "github.com/Euvaz/Backstage-Hive/logger"
     "github.com/Euvaz/Backstage-Hive/models"
-	"github.com/gin-gonic/gin"
+    "github.com/gin-gonic/gin"
 )
 
 func registerRoutes (router *gin.Engine, db *sql.DB) {
