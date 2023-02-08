@@ -29,7 +29,8 @@ func registerRoutes (router *gin.Engine, db *sql.DB) {
         var token models.TokenKey
         err = json.Unmarshal(jsonData, &token)
         if err != nil {
-            logger.Fatal(err.Error())
+            logger.Error(err.Error())
+            ctx.AbortWithStatus(400)
         }
         logger.Info(string(token.Key))
     })
