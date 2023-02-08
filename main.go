@@ -88,6 +88,38 @@ func main() {
     }
 
     // Add subcommand
+    getDroneCmd := &cobra.Command {
+        Use:   "drone",
+        Short: "Short Desc",
+        Long:  `Long Desc`,
+        Aliases: []string{"dr", "drones"},
+        Run: func(cmd *cobra.Command, args []string) {
+            rows, err := db.Query(`SELECT address, port, name FROM drones`)
+            if err != nil {
+                logger.Fatal(err.Error())
+            }
+            defer rows.Close()
+
+            f := "%-15s %-6s %s\n"
+            fmt.Printf(f, "ADDRESS", "PORT", "NAME")
+
+            var address string
+            var port string
+            var name string
+
+            for rows.Next() {
+                if err := rows.Scan(&address, &port, &name); err != nil {
+                    logger.Fatal(err.Error())
+                }
+                fmt.Printf(f, address, port, name)
+            }
+            if err = rows.Err(); err != nil {
+                logger.Fatal(err.Error())
+            }
+        },
+    }
+
+    // Add subcommand
     getTokenCmd := &cobra.Command {
         Use:   "token",
         Short: "Short Desc",
@@ -102,8 +134,10 @@ func main() {
 
             f := "%-50s %s\n"
             fmt.Printf(f, "KEY", "CREATED")
+
             var key string
             var created string
+
             for rows.Next() {
                 if err := rows.Scan(&key, &created); err != nil {
                     logger.Fatal(err.Error())
@@ -122,6 +156,7 @@ func main() {
 
     // Add subcommands
     createCmd.AddCommand(createTokenCmd)
+    getCmd.AddCommand(getDroneCmd)
     getCmd.AddCommand(getTokenCmd)
 
 
