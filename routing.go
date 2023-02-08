@@ -44,6 +44,7 @@ func registerRoutes (router *gin.Engine, db *sql.DB) {
                 logger.Fatal(err.Error())
             }
             logger.Info(fmt.Sprintf(`Drone "%s" Enrolled`, name))
+        } else {
         }
     })
 }

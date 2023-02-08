@@ -4,9 +4,11 @@ import (
     "crypto/rand"
 	"database/sql"
     "encoding/base64"
+    "encoding/json"
 	"fmt"
 
     "github.com/Euvaz/Backstage-Hive/logger"
+    "github.com/Euvaz/Backstage-Hive/models"
 	"github.com/gin-gonic/gin"
 	_ "github.com/jackc/pgx/v5/stdlib"
 	"github.com/spf13/cobra"
@@ -64,9 +66,11 @@ func main() {
         Aliases: []string{"tok", "tokens"},
         Run: func(cmd *cobra.Command, args []string) {
             logger.Debug("Creating token...")
-            var key string = RandStringBytes(50)
-            var enrollmentToken string = base64.StdEncoding.EncodeToString([]byte(fmt.Sprintf(`{"addr":"%s:%v","key":"%s"}`, viper.GetString("host"), viper.GetInt("port"), key)))
-            _, err := db.Exec(`INSERT INTO tokens (id, key, created)
+            key  := RandStringBytes(50)
+            tokenBytes, err := json.Marshal(models.Token{Addr: viper.GetString("host"), Port: viper.GetInt("port"), Key: key})
+            enrollmentToken := base64.StdEncoding.EncodeToString(tokenBytes)
+
+            _, err = db.Exec(`INSERT INTO tokens (id, key, created)
                                VALUES (DEFAULT, $1, CURRENT_TIMESTAMP)`, key)
             if err != nil {
                 logger.Fatal(err.Error())
