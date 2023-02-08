@@ -6,5 +6,5 @@ type Token struct {
 }
 
 type TokenKey struct {
-    Key string `json:"key"`
+    Key     string  `json:"key"`
 }
