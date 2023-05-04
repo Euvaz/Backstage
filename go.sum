@@ -40,6 +40,8 @@ github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03
 github.com/BurntSushi/xgb v0.0.0-20160522181843-27f122750802/go.mod h1:IVnqGOEym/WlBOVXweHU+Q+/VP0lqqI8lqeDx9IjBqo=
 github.com/Euvaz/go-log v0.0.0-20230504204439-c235cc31d2de h1:cGRy36hsndUwmPaVb1tjWgs8r6VEjIV51d89wKvP1Wg=
 github.com/Euvaz/go-log v0.0.0-20230504204439-c235cc31d2de/go.mod h1:DIb80QSZtmql3satrjSdmvt0FNgpZ4JWA+Y+RYRN6uA=
+github.com/Euvaz/go-log v0.0.0-20230504210214-08946c9b5f28 h1:vwBqDLqD4P/uAEAc6vtE8KAmvPmubn0MnMHkW0ki62Q=
+github.com/Euvaz/go-log v0.0.0-20230504210214-08946c9b5f28/go.mod h1:DIb80QSZtmql3satrjSdmvt0FNgpZ4JWA+Y+RYRN6uA=
 github.com/benbjohnson/clock v1.1.0 h1:Q92kusRqC1XV2MjkWETPvjJVqKetz1OzxZB7mHJLju8=
 github.com/bytedance/sonic v1.5.0/go.mod h1:ED5hyg4y6t3/9Ku1R6dU/4KyJ48DZ4jPhfY1O2AihPM=
 github.com/bytedance/sonic v1.8.8 h1:Kj4AYbZSeENfyXicsYppYKO0K2YWab+i2UTSY7Ukz9Q=

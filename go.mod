@@ -5,8 +5,8 @@ go 1.19
 replace github.com/Euvaz/Backstage-Hive/models => ./models
 
 require (
-	github.com/Euvaz/Backstage-Hive/models v0.0.0-20230208225838-00c37d18e865
-	github.com/Euvaz/go-log v0.0.0-20230504204439-c235cc31d2de
+	github.com/Euvaz/Backstage-Hive/models v0.0.0-20230504205838-f069a2f76b37
+	github.com/Euvaz/go-log v0.0.0-20230504210214-08946c9b5f28
 	github.com/gin-gonic/gin v1.9.0
 	github.com/jackc/pgx/v5 v5.3.1
 	github.com/spf13/cobra v1.7.0
