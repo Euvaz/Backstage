@@ -7,8 +7,8 @@ import (
     "encoding/json"
 	"fmt"
 
-    "github.com/Euvaz/Backstage-Hive/logger"
     "github.com/Euvaz/Backstage-Hive/models"
+    "github.com/Euvaz/go-log"
 	"github.com/gin-gonic/gin"
 	_ "github.com/jackc/pgx/v5/stdlib"
 	"github.com/spf13/cobra"
